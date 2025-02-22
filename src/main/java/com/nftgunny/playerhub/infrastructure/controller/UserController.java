@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.concurrent.CompletableFuture;
 
 @Validated
-@Tag(name = "User", description = "Operations related to managing user")
+@Tag(name = "User", description = "Operations relating to managing user")
 @RestController
 @RequestMapping(consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
 @AllArgsConstructor

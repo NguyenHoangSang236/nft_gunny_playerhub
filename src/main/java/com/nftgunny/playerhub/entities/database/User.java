@@ -1,9 +1,7 @@
 package com.nftgunny.playerhub.entities.database;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nftgunny.core.config.constant.ConstantValue;
 import com.nftgunny.core.config.constant.SystemRole;
 import com.nftgunny.core.entities.database.MongoDbEntity;
 import com.nftgunny.playerhub.config.constant.UserStatus;
@@ -19,7 +17,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
