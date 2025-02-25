@@ -11,20 +11,18 @@ import lombok.*;
 
 import java.util.Map;
 
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class RegisterRequest extends ApiRequest {
-    @Setter
-    @Getter
     @NotBlank
     @NotNull
     @Size(max = 15)
     @JsonProperty("user_name")
     String userName;
 
-    @Getter
-    @Setter
     @InsertValid(
             nullMessage = "Password can not be null",
             sha256Message = "Wrong format of password",
@@ -32,8 +30,6 @@ public class RegisterRequest extends ApiRequest {
     )
     String password;
 
-    @Getter
-    @Setter
     @InsertValid(
             nullMessage = "Confirmed password can not be null",
             sha256Message = "Wrong format of confirmed password",
@@ -42,8 +38,6 @@ public class RegisterRequest extends ApiRequest {
     @JsonProperty("confirmed_password")
     String confirmPassword;
 
-    @Getter
-    @Setter
     @InsertValid(
             nullMessage = "Phone number can not be null",
             phoneMessage = "Wrong format for phone number",
@@ -52,8 +46,6 @@ public class RegisterRequest extends ApiRequest {
     @JsonProperty("phone_number")
     String phoneNumber;
 
-    @Getter
-    @Setter
     @InsertValid(
             nullMessage = "Email can not be null",
             emailMessage = "Invalid email",
@@ -61,8 +53,6 @@ public class RegisterRequest extends ApiRequest {
     )
     String email;
 
-    @Getter
-    @Setter
     @JsonProperty("wallet_hash_address")
     String walletHashAddress;
 

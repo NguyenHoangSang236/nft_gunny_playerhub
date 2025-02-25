@@ -1,4 +1,4 @@
-package com.nftgunny.playerhub.entities.database;
+package com.nftgunny.playerhub.entities.database.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

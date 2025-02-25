@@ -2,6 +2,8 @@ package com.nftgunny.playerhub.entities.database;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nftgunny.core.entities.database.MongoDbEntity;
+import com.nftgunny.playerhub.entities.database.dto.AttackFigure;
+import com.nftgunny.playerhub.entities.database.dto.DefenseFigure;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
