@@ -11,20 +11,20 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 public class AttackFigure implements Serializable {
-    Double damage;
+    Integer damage;
 
     @JsonProperty("critical_chance")
     Double criticalChance;
 
     @JsonProperty("life_steal_percentage")
-    Double lifeStealPercentage;
+    Integer lifeStealPercentage;
 
     @JsonProperty("armor_penetration")
-    Double armorPenetration;
+    Integer armorPenetration;
 
     @JsonProperty("healing_reduce_percentage")
-    Double healingReducePercentage;
+    Integer healingReducePercentage;
 
     @JsonProperty("aiming_angle")
-    Double aimingAngle;
+    Integer aimingAngle;
 }

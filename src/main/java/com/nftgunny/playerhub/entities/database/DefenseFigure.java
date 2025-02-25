@@ -12,19 +12,19 @@ import java.io.Serializable;
 @Builder
 public class DefenseFigure implements Serializable {
     @JsonProperty("health_point")
-    Double healthPoint;
+    Integer healthPoint;
 
     @JsonProperty("mana_point")
-    Double manaPoint;
+    Integer manaPoint;
 
     @JsonProperty("cooldown_reduce_percentage")
-    Double cooldownReducePercentage;
+    Integer cooldownReducePercentage;
 
-    Double armor;
+    Integer armor;
 
     @JsonProperty("dodge_chance")
     Double dodgeChance;
 
     @JsonProperty("healing_speed")
-    Double healingSpeed;
+    Integer healingSpeed;
 }

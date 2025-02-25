@@ -35,6 +35,16 @@ public class RegisterRequest extends ApiRequest {
     @Getter
     @Setter
     @InsertValid(
+            nullMessage = "Confirmed password can not be null",
+            sha256Message = "Wrong format of confirmed password",
+            isSha256 = true
+    )
+    @JsonProperty("confirmed_password")
+    String confirmPassword;
+
+    @Getter
+    @Setter
+    @InsertValid(
             nullMessage = "Phone number can not be null",
             phoneMessage = "Wrong format for phone number",
             isPhoneNumber = true
