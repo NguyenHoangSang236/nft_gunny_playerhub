@@ -3,6 +3,8 @@ package com.nftgunny.playerhub.entities.database;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nftgunny.core.entities.database.MongoDbEntity;
 import com.nftgunny.playerhub.config.constant.ItemType;
+import com.nftgunny.playerhub.entities.database.dto.AttackFigure;
+import com.nftgunny.playerhub.entities.database.dto.DefenseFigure;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
@@ -22,10 +24,6 @@ public class Item extends MongoDbEntity implements Serializable {
     @Id
     String id;
 
-    @Field(name = "user_id")
-    @JsonProperty("user_id")
-    String userId;
-
     @Field(name = "name")
     String name;
 
@@ -33,33 +31,27 @@ public class Item extends MongoDbEntity implements Serializable {
     @JsonProperty("image_url")
     String imageUrl;
 
-    @Field(name = "initial_price")
-    @JsonProperty("initial_price")
-    Double initialPrice;
+    @Field(name = "effect_url")
+    @JsonProperty("effect_url")
+    String effectUrl;
 
-    @Field(name = "current_price")
-    @JsonProperty("current_price")
-    Double currentPrice;
+    @Field(name = "projectile_url")
+    @JsonProperty("projectile_url")
+    String projectileUrl;
 
-    @Field(name = "level")
-    Integer level;
-
-    @Field(name = "status")
-    String status;
-
-    @Field(name = "nft_hash_address")
-    @JsonProperty("nft_hash_address")
-    String nftHashAddress;
+    @Field(name = "default_price")
+    @JsonProperty("default_price")
+    Double defaultPrice;
 
     @Enumerated(EnumType.STRING)
     @Field(name = "type")
     ItemType type;
 
-    @Field(name = "attack_figure")
-    @JsonProperty("attack_figure")
-    AttackFigure attackFigure;
+    @Field(name = "default_attack_figure")
+    @JsonProperty("default_attack_figure")
+    AttackFigure defaultAttackFigure;
 
-    @Field(name = "defense_figure")
-    @JsonProperty("defense_figure")
-    DefenseFigure defenseFigure;
+    @Field(name = "default_defense_figure")
+    @JsonProperty("default_defense_figure")
+    DefenseFigure defaultDefenseFigure;
 }
