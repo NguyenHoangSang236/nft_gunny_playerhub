@@ -69,7 +69,7 @@ public class CreateNewUserItemUseCase extends UseCase<CreateNewUserItemUseCase.I
                 .userName(userName)
                 .initialPrice(item.getDefaultPrice())
                 .level(1)
-                .userItemInfo(itemInfo)
+                .itemInfo(itemInfo)
                 .defenseFigure(item.getDefaultDefenseFigure())
                 .attackFigure(item.getDefaultAttackFigure())
                 .build();

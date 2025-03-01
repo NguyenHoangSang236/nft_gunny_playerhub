@@ -68,7 +68,7 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.InputValue, ApiResp
                 return Character.builder()
                         .id(UUID.randomUUID().toString())
                         .level(1)
-                        .userId(newUser.getId())
+                        .userName(newUser.getUsername())
                         .name(newUser.getUsername())
                         .defenseFigure(def)
                         .attackFigure(atk)
