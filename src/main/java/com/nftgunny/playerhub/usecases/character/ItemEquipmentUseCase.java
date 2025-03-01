@@ -8,6 +8,7 @@ import com.nftgunny.core.entities.database.TokenInfo;
 import com.nftgunny.core.utils.JwtUtils;
 import com.nftgunny.playerhub.config.constant.ItemType;
 import com.nftgunny.playerhub.config.constant.UserItemStatus;
+import com.nftgunny.playerhub.entities.database.Character;
 import com.nftgunny.playerhub.entities.database.UserItem;
 import com.nftgunny.playerhub.infrastructure.repository.CharacterRepository;
 import com.nftgunny.playerhub.infrastructure.repository.UserItemRepository;
@@ -62,6 +63,14 @@ public class ItemEquipmentUseCase extends UseCase<ItemEquipmentUseCase.InputValu
                         .build();
             }
 
+            if(!equippedItem.getItemInfo().getType().equals(availableItem.getItemInfo().getType())) {
+                return ApiResponse.builder()
+                        .result(ResponseResult.failed.name())
+                        .message("Equipped item or available item item type does not match with each other")
+                        .status(HttpStatus.BAD_REQUEST)
+                        .build();
+            }
+
             equippedItem.setStatus(UserItemStatus.AVAILABLE);
             availableItem.setStatus(UserItemStatus.EQUIPPED);
 
@@ -88,17 +97,41 @@ public class ItemEquipmentUseCase extends UseCase<ItemEquipmentUseCase.InputValu
                         .build();
             }
 
-            ItemType itemType = availableItem.getItemInfo().getType();
+            ItemType availableItemType = availableItem.getItemInfo().getType();
             List<UserItem> equippedItems = userItemRepo.findByUserNameAndStatus(curUserName, UserItemStatus.EQUIPPED);
 
+            Map<String, Integer> remainItemTypeSlot = new HashMap<>();
+            remainItemTypeSlot.put(ItemType.HAT.name(), ConstantValue.MAX_HAT_AMOUNT_PER_CHARACTER);
+            remainItemTypeSlot.put(ItemType.CLOTHES.name(), ConstantValue.MAX_CLOTHES_AMOUNT_PER_CHARACTER);
+            remainItemTypeSlot.put(ItemType.WEAPON.name(), ConstantValue.MAX_WEAPON_AMOUNT_PER_CHARACTER);
+            remainItemTypeSlot.put(ItemType.ACCESSORY.name(), ConstantValue.MAX_ACCESSORY_AMOUNT_PER_CHARACTER);
 
+            for(UserItem equippedItem : equippedItems) {
+                remainItemTypeSlot.compute(
+                        equippedItem.getItemInfo().getType().name(),
+                        (k, currentAmount) -> currentAmount - 1
+                );
+            }
+
+            if(remainItemTypeSlot.get(availableItemType.name()) < 1) {
+                return ApiResponse.builder()
+                        .result(ResponseResult.failed.name())
+                        .message("Invalid item type to equip")
+                        .status(HttpStatus.BAD_REQUEST)
+                        .build();
+            }
+
+            availableItem.setStatus(UserItemStatus.EQUIPPED);
+            userItemRepo.save(availableItem);
         }
 
-        // TODO: recalculate the figures of character and save it here...
+
+        // recalculate the figures of character
+        Optional<Character> character = characterRepo.findByUserName(curUserName);
 
         return ApiResponse.builder()
                 .result(ResponseResult.success.name())
-                .message("Create new item successfully")
+                .message("Equipped item successfully")
                 .status(HttpStatus.OK)
                 .build();
     }
