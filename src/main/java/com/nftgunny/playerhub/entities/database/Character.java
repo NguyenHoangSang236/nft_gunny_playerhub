@@ -15,51 +15,52 @@ import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @Document("character")
 @Builder
 public class Character extends MongoDbEntity implements Serializable {
-
+    @Getter
+    @Setter
     @Id
     String id;
 
+    @Getter
+    @Setter
+    @Field(name = "user_name")
+    @JsonProperty("user_name")
+    @Indexed(unique = true, name = "unique_user_name_index")
+    String userName;
 
-    @Field(name = "user_id")
-    @JsonProperty("user_id")
-    @Indexed(unique = true, name = "unique_user_id_index")
-    String userId;
-
-
+    @Getter
+    @Setter
     @Field(name = "name")
     @Indexed(unique = true, name = "unique_character_name_index")
     String name;
 
-
+    @Getter
+    @Setter
     @Field(name = "image_url")
     @JsonProperty("image_url")
     String imageUrl;
 
-
+    @Getter
+    @Setter
     @Field(name = "level")
     Integer level;
 
-
+    @Getter
+    @Setter
     @Field(name = "combat_power")
     @JsonProperty("combat_power")
     Long combatPower;
 
-
-    @Field(name = "equipped_item_ids")
-    @JsonProperty("equipped_item_ids")
-    List<String> equippedItemIds;
-
-
+    @Getter
+    @Setter
     @Field(name = "attack_figure")
     @JsonProperty("attack_figure")
     AttackFigure attackFigure;
 
-
+    @Getter
+    @Setter
     @Field(name = "defense_figure")
     @JsonProperty("defense_figure")
     DefenseFigure defenseFigure;
