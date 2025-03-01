@@ -25,10 +25,10 @@ public class Character extends MongoDbEntity implements Serializable {
 
     @Getter
     @Setter
-    @Field(name = "user_id")
-    @JsonProperty("user_id")
-    @Indexed(unique = true, name = "unique_user_id_index")
-    String userId;
+    @Field(name = "user_name")
+    @JsonProperty("user_name")
+    @Indexed(unique = true, name = "unique_user_name_index")
+    String userName;
 
     @Getter
     @Setter
@@ -52,12 +52,6 @@ public class Character extends MongoDbEntity implements Serializable {
     @Field(name = "combat_power")
     @JsonProperty("combat_power")
     Long combatPower;
-
-    @Getter
-    @Setter
-    @Field(name = "equipped_item_ids")
-    @JsonProperty("equipped_item_ids")
-    List<String> equippedItemIds;
 
     @Getter
     @Setter

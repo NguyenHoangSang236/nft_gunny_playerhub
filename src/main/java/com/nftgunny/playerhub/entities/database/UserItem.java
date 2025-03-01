@@ -2,9 +2,12 @@ package com.nftgunny.playerhub.entities.database;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nftgunny.core.entities.database.MongoDbEntity;
+import com.nftgunny.playerhub.config.constant.UserItemStatus;
 import com.nftgunny.playerhub.entities.database.dto.AttackFigure;
 import com.nftgunny.playerhub.entities.database.dto.DefenseFigure;
 import com.nftgunny.playerhub.entities.database.dto.UserItemInfoDto;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -51,5 +54,10 @@ public class UserItem extends MongoDbEntity implements Serializable {
 
     @Field(name = "item_information")
     @JsonProperty("item_information")
-    UserItemInfoDto userItemInfo;
+    UserItemInfoDto itemInfo;
+
+    @Enumerated(EnumType.STRING)
+    @Field(name = "status")
+    @JsonProperty("status")
+    UserItemStatus status;
 }
