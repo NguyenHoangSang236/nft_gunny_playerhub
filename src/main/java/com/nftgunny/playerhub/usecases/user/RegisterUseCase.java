@@ -56,12 +56,12 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.InputValue, ApiResp
 
             CompletableFuture<Character> newCharFtr = CompletableFuture.supplyAsync(() -> {
                 AttackFigure atk = AttackFigure.builder()
-                        .damage(ConstantValue.DEFAULT_CHAR_DAMAGE)
+//                        .damage(ConstantValue.DEFAULT_CHAR_DAMAGE)
                         .build();
 
                 DefenseFigure def = DefenseFigure.builder()
-                        .healthPoint(ConstantValue.DEFAULT_CHAR_HP)
-                        .manaPoint(ConstantValue.DEFAULT_CHAR_MP)
+//                        .healthPoint(ConstantValue.DEFAULT_CHAR_HP)
+//                        .manaPoint(ConstantValue.DEFAULT_CHAR_MP)
                         .build();
 
                 // TODO: Get character image and save it here later...
