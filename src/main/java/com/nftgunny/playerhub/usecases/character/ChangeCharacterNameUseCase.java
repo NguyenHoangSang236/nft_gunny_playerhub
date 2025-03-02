@@ -20,7 +20,7 @@ public class ChangeCharacterNameUseCase extends UseCase<ChangeCharacterNameUseCa
     @Override
     public ApiResponse execute(InputValue input) {
 
-        Optional<Character> characterOptional = characterRepository.findCharacterById(input.characterId());
+        Optional<Character> characterOptional = characterRepository.findById(input.characterId());
 
         if (characterOptional.isPresent()) {
             Character character = characterOptional.get();
@@ -32,7 +32,6 @@ public class ChangeCharacterNameUseCase extends UseCase<ChangeCharacterNameUseCa
             return ApiResponse.builder()
                     .result(ResponseResult.success.name())
                     .message("Character name updated successfully")
-                    .content(character)
                     .status(HttpStatus.OK)
                     .build();
         } else {

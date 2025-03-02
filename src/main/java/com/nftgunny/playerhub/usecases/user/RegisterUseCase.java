@@ -6,9 +6,9 @@ import com.nftgunny.core.config.constant.SystemRole;
 import com.nftgunny.core.entities.api.response.ApiResponse;
 import com.nftgunny.core.utils.JwtUtils;
 import com.nftgunny.playerhub.config.constant.UserStatus;
-import com.nftgunny.playerhub.entities.database.AttackFigure;
+import com.nftgunny.playerhub.entities.database.dto.AttackFigure;
 import com.nftgunny.playerhub.entities.database.Character;
-import com.nftgunny.playerhub.entities.database.DefenseFigure;
+import com.nftgunny.playerhub.entities.database.dto.DefenseFigure;
 import com.nftgunny.playerhub.entities.database.User;
 import com.nftgunny.playerhub.entities.request.RegisterRequest;
 import com.nftgunny.playerhub.infrastructure.repository.CharacterRepository;
@@ -56,19 +56,19 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.InputValue, ApiResp
 
             CompletableFuture<Character> newCharFtr = CompletableFuture.supplyAsync(() -> {
                 AttackFigure atk = AttackFigure.builder()
-//                        .damage(ConstantValue.DEFAULT_CHAR_DAMAGE)
+                        .damage(ConstantValue.DEFAULT_CHAR_DAMAGE)
                         .build();
 
                 DefenseFigure def = DefenseFigure.builder()
-//                        .healthPoint(ConstantValue.DEFAULT_CHAR_HP)
-//                        .manaPoint(ConstantValue.DEFAULT_CHAR_MP)
+                        .healthPoint(ConstantValue.DEFAULT_CHAR_HP)
+                        .manaPoint(ConstantValue.DEFAULT_CHAR_MP)
                         .build();
 
                 // TODO: Get character image and save it here later...
                 return Character.builder()
                         .id(UUID.randomUUID().toString())
                         .level(1)
-                        .userId(newUser.getId())
+                        .userName(newUser.getUsername())
                         .name(newUser.getUsername())
                         .defenseFigure(def)
                         .attackFigure(atk)
@@ -90,6 +90,7 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.InputValue, ApiResp
                     .status(HttpStatus.OK)
                     .build();
         } catch (DuplicateKeyException dupExp) {
+            dupExp.printStackTrace();
             return ApiResponse.builder()
                     .result("failed")
                     .message("This account has been existed")

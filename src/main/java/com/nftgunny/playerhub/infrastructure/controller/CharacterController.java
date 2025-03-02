@@ -28,28 +28,28 @@ public class CharacterController {
     final ChangeCharacterNameUseCase changeCharacterNameUseCase;
 
     @Operation(summary = "Get character infomation by character ID")
-    @GetMapping("/character/{id}")
+    @GetMapping("/authen/character/{id}")
     public CompletableFuture<ResponseEntity<ApiResponse>> getCharacterById(
             @PathVariable("id")
-            @Size(min = 1, max = 20)
-            @NotBlank String characterId
+            @Size(min = 1, max = 50)
+            @NotBlank String id
     ){
     return useCaseExecutor.execute(
             getCharacterByIdUseCase,
-            new GetCharacterByIdUseCase.InputValue(characterId),
+            new GetCharacterByIdUseCase.InputValue(id),
             ResponseMapper::map
     );
     }
 
-    @PatchMapping("/api/character/{id}/changeName")
+    @PatchMapping("/authen/character/{id}/changeName")
     public CompletableFuture<ResponseEntity<ApiResponse>> changeCharacterName(
-            @Size(min = 1, max = 20)
-            @PathVariable("id")  @NotBlank String characterId,
+            @Size(min = 1, max = 50)
+            @PathVariable("id")  @NotBlank String id,
             @RequestParam("newName") @NotBlank String newName
     ) {
         return useCaseExecutor.execute(
                 changeCharacterNameUseCase,
-                new ChangeCharacterNameUseCase.InputValue(characterId,newName),
+                new ChangeCharacterNameUseCase.InputValue(id,newName),
                 ResponseMapper::map
         );
     }

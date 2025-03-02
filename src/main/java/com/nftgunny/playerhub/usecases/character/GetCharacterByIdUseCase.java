@@ -22,7 +22,7 @@ public class GetCharacterByIdUseCase extends UseCase<GetCharacterByIdUseCase.Inp
 
     @Override
     public ApiResponse execute(InputValue input) {
-        Optional<Character> characterOptional = characterRepository.findCharacterById(input.characterId());
+        Optional<Character> characterOptional = characterRepository.findById(input.characterId());
         if (characterOptional.isPresent()) {
             Character character = characterOptional.get();
             return ApiResponse.builder()
