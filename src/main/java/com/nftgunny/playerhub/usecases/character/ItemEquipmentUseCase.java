@@ -12,6 +12,7 @@ import com.nftgunny.playerhub.entities.database.Character;
 import com.nftgunny.playerhub.entities.database.UserItem;
 import com.nftgunny.playerhub.infrastructure.repository.CharacterRepository;
 import com.nftgunny.playerhub.infrastructure.repository.UserItemRepository;
+import com.nftgunny.playerhub.services.FigureCalculationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,11 +25,13 @@ import java.util.*;
 public class ItemEquipmentUseCase extends UseCase<ItemEquipmentUseCase.InputValue, ApiResponse>{
     final CharacterRepository characterRepo;
     final UserItemRepository userItemRepo;
+    final FigureCalculationService figureCalculationService;
     final JwtUtils jwtUtils;
 
-    public ItemEquipmentUseCase(CharacterRepository characterRepo, UserItemRepository userItemRepo, JwtUtils jwtUtils) {
+    public ItemEquipmentUseCase(CharacterRepository characterRepo, UserItemRepository userItemRepo, FigureCalculationService figureCalculationService, JwtUtils jwtUtils) {
         this.characterRepo = characterRepo;
         this.userItemRepo = userItemRepo;
+        this.figureCalculationService = figureCalculationService;
         this.jwtUtils = jwtUtils;
     }
 
@@ -37,6 +40,18 @@ public class ItemEquipmentUseCase extends UseCase<ItemEquipmentUseCase.InputValu
         String availableItemId = input.availableItemId();
         String equippedItemId = input.equippedItemId();
         String curUserName = jwtUtils.getTokenInfoFromHttpRequest(input.httpServletRequest()).getUserName();
+        UserItem equippedItem = null;
+        UserItem availableItem;
+
+        Optional<Character> characterOptional = characterRepo.findByUserName(curUserName);
+
+        if(characterOptional.isEmpty()) {
+            return ApiResponse.builder()
+                    .result(ResponseResult.failed.name())
+                    .message("Character of user " + curUserName + " does not exist")
+                    .status(HttpStatus.BAD_REQUEST)
+                    .build();
+        }
 
         if(equippedItemId != null && !equippedItemId.isBlank()) {
             List<UserItem> items = userItemRepo.findByIdsAndUserName(
@@ -52,8 +67,8 @@ public class ItemEquipmentUseCase extends UseCase<ItemEquipmentUseCase.InputValu
                         .build();
             }
 
-            UserItem equippedItem = items.get(0);
-            UserItem availableItem = items.get(1);
+            equippedItem = items.get(0).getStatus().equals(UserItemStatus.EQUIPPED) ? items.get(0) : items.get(1);
+            availableItem = items.get(1).getStatus().equals(UserItemStatus.AVAILABLE) ? items.get(1) : items.get(0);
 
             if(!equippedItem.getStatus().equals(UserItemStatus.EQUIPPED) || !availableItem.getStatus().equals(UserItemStatus.AVAILABLE)) {
                 return ApiResponse.builder()
@@ -87,7 +102,7 @@ public class ItemEquipmentUseCase extends UseCase<ItemEquipmentUseCase.InputValu
                         .build();
             }
 
-            UserItem availableItem = availableItemOptional.get();
+            availableItem = availableItemOptional.get();
 
             if(availableItem.getStatus() != UserItemStatus.AVAILABLE) {
                 return ApiResponse.builder()
@@ -106,9 +121,9 @@ public class ItemEquipmentUseCase extends UseCase<ItemEquipmentUseCase.InputValu
             remainItemTypeSlot.put(ItemType.WEAPON.name(), ConstantValue.MAX_WEAPON_AMOUNT_PER_CHARACTER);
             remainItemTypeSlot.put(ItemType.ACCESSORY.name(), ConstantValue.MAX_ACCESSORY_AMOUNT_PER_CHARACTER);
 
-            for(UserItem equippedItem : equippedItems) {
+            for(UserItem item : equippedItems) {
                 remainItemTypeSlot.compute(
-                        equippedItem.getItemInfo().getType().name(),
+                        item.getItemInfo().getType().name(),
                         (k, currentAmount) -> currentAmount - 1
                 );
             }
@@ -125,9 +140,11 @@ public class ItemEquipmentUseCase extends UseCase<ItemEquipmentUseCase.InputValu
             userItemRepo.save(availableItem);
         }
 
-
         // recalculate the figures of character
-        Optional<Character> character = characterRepo.findByUserName(curUserName);
+        Character character = characterOptional.get();
+        character = figureCalculationService.calculateCharacterFigure(character, availableItem, equippedItem);
+
+        characterRepo.save(character);
 
         return ApiResponse.builder()
                 .result(ResponseResult.success.name())
