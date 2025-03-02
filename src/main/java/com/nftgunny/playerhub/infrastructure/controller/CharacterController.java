@@ -7,6 +7,7 @@ import com.nftgunny.playerhub.usecases.character.ChangeCharacterNameUseCase;
 import com.nftgunny.playerhub.usecases.character.GetCharacterByIdUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -32,11 +33,12 @@ public class CharacterController {
     public CompletableFuture<ResponseEntity<ApiResponse>> getCharacterById(
             @PathVariable("id")
             @Size(min = 1, max = 50)
-            @NotBlank String id
+            @NotBlank String id,
+            HttpServletRequest httpServletRequest
     ){
     return useCaseExecutor.execute(
             getCharacterByIdUseCase,
-            new GetCharacterByIdUseCase.InputValue(id),
+            new GetCharacterByIdUseCase.InputValue(id,httpServletRequest),
             ResponseMapper::map
     );
     }
@@ -45,11 +47,12 @@ public class CharacterController {
     public CompletableFuture<ResponseEntity<ApiResponse>> changeCharacterName(
             @Size(min = 1, max = 50)
             @PathVariable("id")  @NotBlank String id,
-            @RequestParam("newName") @NotBlank String newName
+            @RequestParam("newName") @NotBlank String newName,
+            HttpServletRequest httpServletRequest
     ) {
         return useCaseExecutor.execute(
                 changeCharacterNameUseCase,
-                new ChangeCharacterNameUseCase.InputValue(id,newName),
+                new ChangeCharacterNameUseCase.InputValue(id,newName,httpServletRequest),
                 ResponseMapper::map
         );
     }
