@@ -11,46 +11,39 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
 @Component
 public class ChangeCharacterNameUseCase extends UseCase<ChangeCharacterNameUseCase.InputValue, ApiResponse> {
+    final GetCharacterByIdUseCase getCharacterByIdUseCase;
     final CharacterRepository characterRepository;
     final JwtUtils jwtUtils;
 
     public ChangeCharacterNameUseCase(GetCharacterByIdUseCase getCharacterByIdUseCase, CharacterRepository characterRepository, JwtUtils jwtUtils) {
+        this.getCharacterByIdUseCase = getCharacterByIdUseCase;
         this.characterRepository = characterRepository;
         this.jwtUtils = jwtUtils;
     }
 
     @Override
     public ApiResponse execute(InputValue input) {
-        String curUserName = jwtUtils.getTokenInfoFromHttpRequest(input.httpServletRequest()).getUserName();
+        ApiResponse response = getCharacterByIdUseCase.execute(new GetCharacterByIdUseCase.InputValue(input.characterId(), input.httpServletRequest()));
 
-        Optional<Character> characterOptional = characterRepository.findById(input.characterId());
-
-        //Kiểm tra xem có character không
-        if (characterOptional.isEmpty()) {
-            return ApiResponse.builder()
-                    .result(ResponseResult.failed.name())
-                    .message("Character not found")
-                    .status(HttpStatus.NOT_FOUND)
-                    .build();
+        if (!response.getStatus().equals(HttpStatus.OK)) {
+            return response;
         }
 
-        Character character = characterOptional.get();
-
+        Character character = (Character) response.getContent();
+        String curUserName = jwtUtils.getTokenInfoFromHttpRequest(input.httpServletRequest()).getUserName();
 
         if (!character.getName().equals(curUserName)) {
             return ApiResponse.builder()
                     .result(ResponseResult.failed.name())
-                    .message("No permission")
+                    .message("You do not have permission to change this character's name")
                     .status(HttpStatus.FORBIDDEN)
                     .build();
         }
 
         character.setName(input.newName());
         characterRepository.save(character);
-
 
         return ApiResponse.builder()
                 .result(ResponseResult.success.name())
@@ -59,5 +52,5 @@ public class ChangeCharacterNameUseCase extends UseCase<ChangeCharacterNameUseCa
                 .build();
     }
 
-    public record InputValue(String characterId, String newName, HttpServletRequest httpServletRequest) implements UseCase.InputValue {};
+    public record InputValue(String characterId, String newName, HttpServletRequest httpServletRequest) implements UseCase.InputValue {}
 }
