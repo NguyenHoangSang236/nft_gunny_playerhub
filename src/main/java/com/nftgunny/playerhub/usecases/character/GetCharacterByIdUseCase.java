@@ -33,7 +33,7 @@ public class GetCharacterByIdUseCase extends UseCase<GetCharacterByIdUseCase.Inp
 
         Optional<Character> characterOptional = characterRepository.findById(input.characterId());
 
-        //Kiểm tra xem có character không
+        //Check if there is a character
         if (characterOptional.isEmpty()) {
             return ApiResponse.builder()
                     .result(ResponseResult.failed.name())
@@ -44,12 +44,12 @@ public class GetCharacterByIdUseCase extends UseCase<GetCharacterByIdUseCase.Inp
 
         Character character = characterOptional.get();
 
-        //Kiểm tra xem nhân vật có thuộc về user
+        //Check if character belongs to user
         if (!character.getName().equals(curUserName)) {
             return ApiResponse.builder()
                     .result(ResponseResult.failed.name())
-                    .message("No permisssion")
-                    .status(HttpStatus.FORBIDDEN)
+                    .message("You have no permission to edit this character")
+                    .status(HttpStatus.BAD_REQUEST)
                     .build();
         }
 
@@ -62,5 +62,5 @@ public class GetCharacterByIdUseCase extends UseCase<GetCharacterByIdUseCase.Inp
                 .build();
     }
 
-    public record InputValue(String characterId, HttpServletRequest httpServletRequest) implements UseCase.InputValue {};
+    public record InputValue(String characterId, HttpServletRequest httpServletRequest) implements UseCase.InputValue {}
 }

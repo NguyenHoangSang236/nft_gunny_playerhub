@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class ChangeCharacterNameUseCase extends UseCase<ChangeCharacterNameUseCase.InputValue, ApiResponse> {
     final GetCharacterByIdUseCase getCharacterByIdUseCase;
@@ -25,25 +27,34 @@ public class ChangeCharacterNameUseCase extends UseCase<ChangeCharacterNameUseCa
 
     @Override
     public ApiResponse execute(InputValue input) {
-        ApiResponse response = getCharacterByIdUseCase.execute(new GetCharacterByIdUseCase.InputValue(input.characterId(), input.httpServletRequest()));
+        String curUserName = jwtUtils.getTokenInfoFromHttpRequest(input.httpServletRequest()).getUserName();
 
-        if (!response.getStatus().equals(HttpStatus.OK)) {
-            return response;
+
+        Optional<Character> characterOptional = characterRepository.findById(input.characterId());
+
+        //Check if there is a character
+        if (characterOptional.isEmpty()) {
+            return ApiResponse.builder()
+                    .result(ResponseResult.failed.name())
+                    .message("Character not found")
+                    .status(HttpStatus.NOT_FOUND)
+                    .build();
         }
 
-        Character character = (Character) response.getContent();
-        String curUserName = jwtUtils.getTokenInfoFromHttpRequest(input.httpServletRequest()).getUserName();
+        Character character = characterOptional.get();
+
 
         if (!character.getName().equals(curUserName)) {
             return ApiResponse.builder()
                     .result(ResponseResult.failed.name())
                     .message("You do not have permission to change this character's name")
-                    .status(HttpStatus.FORBIDDEN)
+                    .status(HttpStatus.BAD_REQUEST)
                     .build();
         }
 
         character.setName(input.newName());
         characterRepository.save(character);
+
 
         return ApiResponse.builder()
                 .result(ResponseResult.success.name())

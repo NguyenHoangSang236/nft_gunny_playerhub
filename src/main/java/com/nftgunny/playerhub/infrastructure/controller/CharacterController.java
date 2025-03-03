@@ -47,7 +47,7 @@ public class CharacterController {
     public CompletableFuture<ResponseEntity<ApiResponse>> changeCharacterName(
             @Size(min = 1, max = 50)
             @PathVariable("id")  @NotBlank String id,
-            @RequestParam("newName") @NotBlank String newName,
+            @RequestParam("new_name") @NotBlank String newName,
             HttpServletRequest httpServletRequest
     ) {
         return useCaseExecutor.execute(
