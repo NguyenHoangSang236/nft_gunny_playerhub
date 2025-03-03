@@ -1,5 +1,6 @@
 package com.nftgunny.playerhub;
 
+import com.nftgunny.core.repository.SystemConfigRepository;
 import com.nftgunny.core.utils.InitiateConfigUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -39,5 +40,6 @@ public class PlayerhubApplication {
 	@EventListener(ApplicationReadyEvent.class)
 	public void initSslConfig() {
 		initiateConfigUtils.initSslConfig();
+		initiateConfigUtils.getWeightSystemConfig();
 	}
 }
