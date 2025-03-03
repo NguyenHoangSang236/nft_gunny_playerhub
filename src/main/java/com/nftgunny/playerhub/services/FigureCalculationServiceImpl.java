@@ -33,19 +33,21 @@ public class FigureCalculationServiceImpl implements FigureCalculationService{
 
     @Override
     public Character calculateCharacterFigure(Character selectedCharacter, UserItem newEquippedItem, UserItem removedItem) {
-        AttackFigure newEquippedItemAtk = newEquippedItem.getAttackFigure();
-        DefenseFigure newEquippedItemDef = newEquippedItem.getDefenseFigure();
-
-        AttackFigure removedItemAtk = removedItem.getAttackFigure();
-        DefenseFigure removedItemDef = removedItem.getDefenseFigure();
-
         AttackFigure charAtk = selectedCharacter.getAttackFigure();
         DefenseFigure charDef = selectedCharacter.getDefenseFigure();
 
-        charAtk.subtract(removedItemAtk);
-        charAtk.add(newEquippedItemAtk);
+        if(removedItem != null) {
+            AttackFigure removedItemAtk = removedItem.getAttackFigure();
+            DefenseFigure removedItemDef = removedItem.getDefenseFigure();
 
-        charDef.subtract(removedItemDef);
+            charAtk.subtract(removedItemAtk);
+            charDef.subtract(removedItemDef);
+        }
+
+        AttackFigure newEquippedItemAtk = newEquippedItem.getAttackFigure();
+        DefenseFigure newEquippedItemDef = newEquippedItem.getDefenseFigure();
+
+        charAtk.add(newEquippedItemAtk);
         charDef.add(newEquippedItemDef);
 
         long combatPower = calculateCombatPower(charAtk, charDef);
@@ -55,7 +57,8 @@ public class FigureCalculationServiceImpl implements FigureCalculationService{
         return selectedCharacter;
     }
 
-    private long calculateCombatPower(AttackFigure atk, DefenseFigure def) {
+    @Override
+    public long calculateCombatPower(AttackFigure atk, DefenseFigure def) {
         int dmg = atk.getDamage();
         double crit = atk.getCriticalChance();
         int pen = atk.getArmorPenetration();
