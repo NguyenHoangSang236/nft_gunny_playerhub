@@ -90,6 +90,7 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.InputValue, ApiResp
                     .status(HttpStatus.OK)
                     .build();
         } catch (DuplicateKeyException dupExp) {
+            dupExp.printStackTrace();
             return ApiResponse.builder()
                     .result("failed")
                     .message("This account has been existed")
