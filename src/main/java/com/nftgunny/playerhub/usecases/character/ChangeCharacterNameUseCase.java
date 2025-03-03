@@ -15,18 +15,17 @@ import java.util.Optional;
 
 @Component
 public class ChangeCharacterNameUseCase extends UseCase<ChangeCharacterNameUseCase.InputValue, ApiResponse> {
-    final GetCharacterByIdUseCase getCharacterByIdUseCase;
     final CharacterRepository characterRepository;
     final JwtUtils jwtUtils;
 
-    public ChangeCharacterNameUseCase(GetCharacterByIdUseCase getCharacterByIdUseCase, CharacterRepository characterRepository, JwtUtils jwtUtils) {
-        this.getCharacterByIdUseCase = getCharacterByIdUseCase;
+    public ChangeCharacterNameUseCase( CharacterRepository characterRepository, JwtUtils jwtUtils) {
         this.characterRepository = characterRepository;
         this.jwtUtils = jwtUtils;
     }
 
     @Override
     public ApiResponse execute(InputValue input) {
+
         String curUserName = jwtUtils.getTokenInfoFromHttpRequest(input.httpServletRequest()).getUserName();
 
 
