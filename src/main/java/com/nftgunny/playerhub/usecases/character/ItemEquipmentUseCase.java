@@ -4,12 +4,12 @@ import com.nftgunny.core.common.usecase.UseCase;
 import com.nftgunny.core.config.constant.ConstantValue;
 import com.nftgunny.core.config.constant.ResponseResult;
 import com.nftgunny.core.entities.api.response.ApiResponse;
-import com.nftgunny.core.entities.database.TokenInfo;
 import com.nftgunny.core.utils.JwtUtils;
 import com.nftgunny.playerhub.config.constant.ItemType;
 import com.nftgunny.playerhub.config.constant.UserItemStatus;
 import com.nftgunny.playerhub.entities.database.Character;
 import com.nftgunny.playerhub.entities.database.UserItem;
+import com.nftgunny.playerhub.entities.request.EquipItemRequest;
 import com.nftgunny.playerhub.infrastructure.repository.CharacterRepository;
 import com.nftgunny.playerhub.infrastructure.repository.UserItemRepository;
 import com.nftgunny.playerhub.services.FigureCalculationService;
@@ -37,8 +37,8 @@ public class ItemEquipmentUseCase extends UseCase<ItemEquipmentUseCase.InputValu
 
     @Override
     public ApiResponse execute(InputValue input) {
-        String availableItemId = input.availableItemId();
-        String equippedItemId = input.equippedItemId();
+        String availableItemId = input.request().getAvailableItemId();
+        String equippedItemId = input.request().getEquippedItemId();
         String curUserName = jwtUtils.getTokenInfoFromHttpRequest(input.httpServletRequest()).getUserName();
         UserItem equippedItem = null;
         UserItem availableItem;
@@ -70,18 +70,18 @@ public class ItemEquipmentUseCase extends UseCase<ItemEquipmentUseCase.InputValu
             equippedItem = items.get(0).getStatus().equals(UserItemStatus.EQUIPPED) ? items.get(0) : items.get(1);
             availableItem = items.get(1).getStatus().equals(UserItemStatus.AVAILABLE) ? items.get(1) : items.get(0);
 
-            if(!equippedItem.getStatus().equals(UserItemStatus.EQUIPPED) || !availableItem.getStatus().equals(UserItemStatus.AVAILABLE)) {
+            if(!equippedItem.getItemInfo().getType().equals(availableItem.getItemInfo().getType())) {
                 return ApiResponse.builder()
                         .result(ResponseResult.failed.name())
-                        .message("Equipped item or available item has invalid status")
+                        .message("Item type of equipped item and available item is mis-matching")
                         .status(HttpStatus.BAD_REQUEST)
                         .build();
             }
 
-            if(!equippedItem.getItemInfo().getType().equals(availableItem.getItemInfo().getType())) {
+            if(!equippedItem.getStatus().equals(UserItemStatus.EQUIPPED) || !availableItem.getStatus().equals(UserItemStatus.AVAILABLE)) {
                 return ApiResponse.builder()
                         .result(ResponseResult.failed.name())
-                        .message("Equipped item or available item item type does not match with each other")
+                        .message("Equipped item or available item has invalid status")
                         .status(HttpStatus.BAD_REQUEST)
                         .build();
             }
@@ -92,7 +92,7 @@ public class ItemEquipmentUseCase extends UseCase<ItemEquipmentUseCase.InputValu
             userItemRepo.saveAll(List.of(equippedItem, availableItem));
         }
         else {
-            Optional<UserItem> availableItemOptional = userItemRepo.findByUserNameAndItemId(curUserName, availableItemId);
+            Optional<UserItem> availableItemOptional = userItemRepo.findByUserNameAndUserItemId(curUserName, availableItemId);
 
             if(availableItemOptional.isEmpty()) {
                 return ApiResponse.builder()
@@ -153,5 +153,5 @@ public class ItemEquipmentUseCase extends UseCase<ItemEquipmentUseCase.InputValu
                 .build();
     }
 
-    public record InputValue(String equippedItemId, String availableItemId, HttpServletRequest httpServletRequest) implements UseCase.InputValue {};
+    public record InputValue(EquipItemRequest request, HttpServletRequest httpServletRequest) implements UseCase.InputValue {};
 }

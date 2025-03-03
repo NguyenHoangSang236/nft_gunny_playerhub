@@ -14,6 +14,9 @@ public interface UserItemRepository extends MongoRepository<UserItem, String> {
     @Query("{ 'user_name': ?0, 'item_information._id': ?1 }")
     Optional<UserItem> findByUserNameAndItemId(String userName, String itemId);
 
+    @Query("{ 'user_name': ?0, '_id': ?1 }")
+    Optional<UserItem> findByUserNameAndUserItemId(String userName, String userItemId);
+
     @Query("{ '_id': { '$in': ?0 }, 'user_name': ?1, 'status': ?2 }")
     List<UserItem> findByIdsAndUserNameAndStatus(List<String> ids, String userName, UserItemStatus status);
 
