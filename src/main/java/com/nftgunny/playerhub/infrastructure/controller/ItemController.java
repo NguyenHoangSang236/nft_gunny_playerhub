@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -62,12 +63,13 @@ public class ItemController {
         );
     }
     @Operation(summary = "Unequip items for character")
-    @PatchMapping("/un_equip")
-    public CompletableFuture<ResponseEntity<ApiResponse>> unEquipItems(
-            @Valid  @PathVariable("equipped_item_id") String equippedItemId,
+    @PatchMapping("/unequip")
+    public CompletableFuture<ResponseEntity<ApiResponse>> unequipItems(
+           @Size(min = 1, max = 50)
+           @RequestParam("equiped_item_id") String itemId,
             HttpServletRequest httpServletRequest
     ){
-        UnequipItemRequest request = new UnequipItemRequest(equippedItemId);
+        UnequipItemRequest request = new UnequipItemRequest(itemId);
        return useCaseExecutor.execute(
             itemUnequipmentUseCase,
                new ItemUnequipmentUseCase.InputValue(request, httpServletRequest),

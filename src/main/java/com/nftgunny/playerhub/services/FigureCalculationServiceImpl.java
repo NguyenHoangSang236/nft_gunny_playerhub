@@ -43,12 +43,15 @@ public class FigureCalculationServiceImpl implements FigureCalculationService{
             charAtk.subtract(removedItemAtk);
             charDef.subtract(removedItemDef);
         }
+        if (newEquippedItem != null) {
+            AttackFigure newEquippedItemAtk = newEquippedItem.getAttackFigure();
+            DefenseFigure newEquippedItemDef = newEquippedItem.getDefenseFigure();
 
-        AttackFigure newEquippedItemAtk = newEquippedItem.getAttackFigure();
-        DefenseFigure newEquippedItemDef = newEquippedItem.getDefenseFigure();
+            charAtk.add(newEquippedItemAtk);
+            charDef.add(newEquippedItemDef);
+        }
 
-        charAtk.add(newEquippedItemAtk);
-        charDef.add(newEquippedItemDef);
+
 
         long combatPower = calculateCombatPower(charAtk, charDef);
 

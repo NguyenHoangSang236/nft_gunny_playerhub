@@ -11,6 +11,5 @@ import lombok.*;
 @NoArgsConstructor
 public class UnequipItemRequest {
     @NotBlank
-    @JsonProperty("equipped_item_id")
     private String equippedItemId;
 }

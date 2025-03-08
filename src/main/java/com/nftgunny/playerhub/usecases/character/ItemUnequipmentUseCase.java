@@ -37,9 +37,10 @@ public class ItemUnequipmentUseCase extends UseCase<ItemUnequipmentUseCase.Input
     public ApiResponse execute(InputValue input) {
         String equippedItemId = input.request().getEquippedItemId();
         String curUserName = jwtUtils.getTokenInfoFromHttpRequest(input.httpServletRequest()).getUserName();
+        log.info("UserName from Token: {}", curUserName);
 
         Optional<Character> characterOptional = characterRepository.findByUserName(curUserName);
-
+        log.info("Character found: {}", characterOptional.isPresent());
         if (characterOptional.isEmpty()) {
             return ApiResponse.builder()
                     .result(ResponseResult.failed.name())
@@ -47,7 +48,13 @@ public class ItemUnequipmentUseCase extends UseCase<ItemUnequipmentUseCase.Input
                     .status(HttpStatus.BAD_REQUEST)
                     .build();
         }
-
+        if (equippedItemId == null || equippedItemId.isBlank()) {
+            return ApiResponse.builder()
+                    .result(ResponseResult.failed.name())
+                    .message("Equipped item ID is required")
+                    .status(HttpStatus.BAD_REQUEST)
+                    .build();
+        }
         Optional<UserItem> equippedItemOptional = userItemRepository.findByUserNameAndUserItemId(curUserName, equippedItemId);
         if (equippedItemOptional.isEmpty() || !equippedItemOptional.get().getStatus().equals(UserItemStatus.EQUIPPED)) {
             return ApiResponse.builder()
@@ -62,13 +69,15 @@ public class ItemUnequipmentUseCase extends UseCase<ItemUnequipmentUseCase.Input
         equippedItem.setStatus(UserItemStatus.AVAILABLE);
         userItemRepository.save(equippedItem);
 
+
         Character character = characterOptional.get();
+
         character = figureCalculationService.calculateCharacterFigure(character, null, equippedItem);
         characterRepository.save(character);
 
         return ApiResponse.builder()
                 .result(ResponseResult.success.name())
-                .message("Unequipped item")
+                .message("Unequipped item successfully")
                 .status(HttpStatus.OK)
                 .build();
 
