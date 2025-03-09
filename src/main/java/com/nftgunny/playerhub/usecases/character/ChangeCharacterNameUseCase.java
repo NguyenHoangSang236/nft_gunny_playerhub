@@ -43,7 +43,7 @@ public class ChangeCharacterNameUseCase extends UseCase<ChangeCharacterNameUseCa
         Character character = characterOptional.get();
 
 
-        if (!character.getName().equals(curUserName)) {
+        if (!character.getUserName().equals(curUserName)) {
             return ApiResponse.builder()
                     .result(ResponseResult.failed.name())
                     .message("You do not have permission to change this character's name")

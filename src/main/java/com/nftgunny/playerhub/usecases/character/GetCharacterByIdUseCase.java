@@ -45,7 +45,7 @@ public class GetCharacterByIdUseCase extends UseCase<GetCharacterByIdUseCase.Inp
         Character character = characterOptional.get();
 
         //Check if character belongs to user
-        if (!character.getName().equals(curUserName)) {
+        if (!character.getUserName().equals(curUserName)) {
             return ApiResponse.builder()
                     .result(ResponseResult.failed.name())
                     .message("You have no permission to edit this character")
