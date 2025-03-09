@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface CharacterRepository extends MongoRepository<Character, String> {
-    @Query("{ 'name': ?0 }")
+    @Query("{ 'user_name': ?0 }")
     Optional<Character> findByUserName(String userName);
 }
