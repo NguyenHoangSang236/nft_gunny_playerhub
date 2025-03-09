@@ -5,14 +5,12 @@ import com.nftgunny.core.entities.api.response.ApiResponse;
 import com.nftgunny.core.entities.api.response.ResponseMapper;
 import com.nftgunny.playerhub.entities.request.CreateUserItemRequest;
 import com.nftgunny.playerhub.entities.request.EquipItemRequest;
-import com.nftgunny.playerhub.entities.request.UnequipItemRequest;
 import com.nftgunny.playerhub.usecases.character.ItemEquipmentUseCase;
 import com.nftgunny.playerhub.usecases.character.ItemUnequipmentUseCase;
 import com.nftgunny.playerhub.usecases.item.CreateNewUserItemUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -65,14 +63,13 @@ public class ItemController {
     @Operation(summary = "Unequip items for character")
     @PatchMapping("/unequip")
     public CompletableFuture<ResponseEntity<ApiResponse>> unequipItems(
-           @Size(min = 1, max = 50)
+           @Size( max = 50)
            @RequestParam("equiped_item_id") String itemId,
             HttpServletRequest httpServletRequest
     ){
-        UnequipItemRequest request = new UnequipItemRequest(itemId);
        return useCaseExecutor.execute(
             itemUnequipmentUseCase,
-               new ItemUnequipmentUseCase.InputValue(request, httpServletRequest),
+               new ItemUnequipmentUseCase.InputValue(itemId, httpServletRequest),
                ResponseMapper::map
        );
     }

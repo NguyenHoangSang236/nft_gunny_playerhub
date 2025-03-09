@@ -7,7 +7,6 @@ import com.nftgunny.core.utils.JwtUtils;
 import com.nftgunny.playerhub.config.constant.UserItemStatus;
 import com.nftgunny.playerhub.entities.database.Character;
 import com.nftgunny.playerhub.entities.database.UserItem;
-import com.nftgunny.playerhub.entities.request.UnequipItemRequest;
 import com.nftgunny.playerhub.infrastructure.repository.CharacterRepository;
 import com.nftgunny.playerhub.infrastructure.repository.UserItemRepository;
 import com.nftgunny.playerhub.services.FigureCalculationService;
@@ -35,7 +34,7 @@ public class ItemUnequipmentUseCase extends UseCase<ItemUnequipmentUseCase.Input
 
     @Override
     public ApiResponse execute(InputValue input) {
-        String equippedItemId = input.request().getEquippedItemId();
+        String equippedItemId = input.equippedItemId();
         String curUserName = jwtUtils.getTokenInfoFromHttpRequest(input.httpServletRequest()).getUserName();
         log.info("UserName from Token: {}", curUserName);
 
@@ -84,5 +83,5 @@ public class ItemUnequipmentUseCase extends UseCase<ItemUnequipmentUseCase.Input
     }
 
 
-    public record InputValue(UnequipItemRequest request, HttpServletRequest httpServletRequest) implements UseCase.InputValue {}
+    public record InputValue(String equippedItemId, HttpServletRequest httpServletRequest) implements UseCase.InputValue {}
 }
