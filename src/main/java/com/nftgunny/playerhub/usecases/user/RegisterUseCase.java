@@ -60,11 +60,20 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.InputValue, ApiResp
             CompletableFuture<Character> newCharFtr = CompletableFuture.supplyAsync(() -> {
                 AttackFigure atk = AttackFigure.builder()
                         .damage(ConstantValue.DEFAULT_CHAR_DAMAGE)
+                        .criticalChance(0.0)
+                        .lifeStealPercentage(0)
+                        .armorPenetration(0)
+                        .healingReducePercentage(0)
+                        .aimingAngle(0)
                         .build();
 
                 DefenseFigure def = DefenseFigure.builder()
                         .healthPoint(ConstantValue.DEFAULT_CHAR_HP)
                         .manaPoint(ConstantValue.DEFAULT_CHAR_MP)
+                        .cooldownReducePercentage(0)
+                        .armor(0)
+                        .dodgeChance(0.0)
+                        .healingSpeed(0)
                         .build();
 
                 long combatPower = figureCalculationService.calculateCombatPower(atk, def);
