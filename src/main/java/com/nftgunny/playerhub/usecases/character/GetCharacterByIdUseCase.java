@@ -62,5 +62,6 @@ public class GetCharacterByIdUseCase extends UseCase<GetCharacterByIdUseCase.Inp
                 .build();
     }
 
-    public record InputValue(String characterId, HttpServletRequest httpServletRequest) implements UseCase.InputValue {}
+    public record InputValue(String characterId, HttpServletRequest httpServletRequest) implements UseCase.InputValue {
+    }
 }

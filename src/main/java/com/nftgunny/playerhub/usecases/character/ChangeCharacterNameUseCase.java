@@ -2,10 +2,9 @@ package com.nftgunny.playerhub.usecases.character;
 
 import com.nftgunny.core.common.usecase.UseCase;
 import com.nftgunny.core.config.constant.ResponseResult;
+import com.nftgunny.core.entities.api.response.ApiResponse;
 import com.nftgunny.core.utils.JwtUtils;
 import com.nftgunny.playerhub.entities.database.Character;
-
-import com.nftgunny.core.entities.api.response.ApiResponse;
 import com.nftgunny.playerhub.infrastructure.repository.CharacterRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -18,7 +17,7 @@ public class ChangeCharacterNameUseCase extends UseCase<ChangeCharacterNameUseCa
     final CharacterRepository characterRepository;
     final JwtUtils jwtUtils;
 
-    public ChangeCharacterNameUseCase( CharacterRepository characterRepository, JwtUtils jwtUtils) {
+    public ChangeCharacterNameUseCase(CharacterRepository characterRepository, JwtUtils jwtUtils) {
         this.characterRepository = characterRepository;
         this.jwtUtils = jwtUtils;
     }
@@ -62,5 +61,7 @@ public class ChangeCharacterNameUseCase extends UseCase<ChangeCharacterNameUseCa
                 .build();
     }
 
-    public record InputValue(String characterId, String newName, HttpServletRequest httpServletRequest) implements UseCase.InputValue {}
+    public record InputValue(String characterId, String newName,
+                             HttpServletRequest httpServletRequest) implements UseCase.InputValue {
+    }
 }
