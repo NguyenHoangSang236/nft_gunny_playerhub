@@ -19,65 +19,57 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Document("user")
 @Builder
 public class User extends MongoDbEntity implements UserDetails {
     @Getter
-    @Setter
     @Id
     String id;
 
-    @Setter
     @Field(name = "user_name")
     @JsonProperty("user_name")
     @Indexed(unique = true, name = "unique_account_username_index")
     String userName;
 
-    @Setter
     @Field(name = "password")
+    @JsonIgnore
     String password;
 
     @Getter
-    @Setter
     @JsonProperty("current_jwt")
     @Field(name = "current_jwt")
     String currentJwt;
 
     @Getter
-    @Setter
     @JsonProperty("wallet_hash_address")
     @Field(name = "wallet_hash_address")
     String walletHashAddress;
 
     @Getter
-    @Setter
     @JsonProperty("coin_amount")
     @Field(name = "coin_amount")
     double coinAmount;
 
     @Getter
-    @Setter
     @JsonProperty("phone_number")
     @Field(name = "phone_number")
     String phoneNumber;
 
     @Getter
-    @Setter
     @JsonProperty("email")
     @Field(name = "email")
     String email;
 
     @Getter
-    @Setter
     @Field(name = "status")
     @Enumerated(EnumType.STRING)
     UserStatus status;
 
 
     @Getter
-    @Setter
     @Field(name = "role")
     @Enumerated(EnumType.STRING)
     SystemRole role;
