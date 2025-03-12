@@ -42,6 +42,22 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.InputValue, ApiResp
     public ApiResponse execute(InputValue input) {
         try {
             RegisterRequest request = input.request();
+            if (request.getUserName() == null || request.getUserName().trim().isEmpty()) {
+                return ApiResponse.builder()
+                        .result("failed")
+                        .message("Username cannot be empty")
+                        .status(HttpStatus.BAD_REQUEST)
+                        .build();
+            }
+
+            Boolean exists = userRepo.existsByUserName(request.getUserName());
+            if (Boolean.TRUE.equals(exists)) {  // Dùng Boolean.TRUE để tránh lỗi null
+                return ApiResponse.builder()
+                        .result("failed")
+                        .message("This account already exists!")
+                        .status(HttpStatus.BAD_REQUEST)
+                        .build();
+            }
             User newUser = User.builder()
                     .id(UUID.randomUUID().toString())
                     .userName(request.getUserName())
@@ -54,7 +70,7 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.InputValue, ApiResp
                     .build();
 
             newUser.setCreationDate(new Date());
-
+            userRepo.save(newUser);
             // TODO: Get coin amount from wallet later...
 
             CompletableFuture<Character> newCharFtr = CompletableFuture.supplyAsync(() -> {
@@ -95,10 +111,17 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.InputValue, ApiResp
                 return null;
             });
 
-            userRepo.save(newUser);
-            characterRepo.save(newCharFtr.get());
 
-            jwtUtils.createRefreshTokenForAccount(newUser.getUsername(), newUser.getRole().name());
+            Character newCharacter = newCharFtr.join();
+            characterRepo.save(newCharacter);
+
+            try {
+                jwtUtils.createRefreshTokenForAccount(newUser.getUsername(), newUser.getRole().name());
+            } catch (DuplicateKeyException e) {
+                log.warn("Duplicate refresh token entry for user: {}", newUser.getUsername());
+            } catch (Exception e) {
+                log.error("Error creating refresh token: {}", e.getMessage());
+            }
 
             return ApiResponse.builder()
                     .result("success")

@@ -37,6 +37,7 @@ public class User extends MongoDbEntity implements UserDetails {
 
     @Setter
     @Field(name = "password")
+    @JsonIgnore
     String password;
 
     @Getter
